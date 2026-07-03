@@ -1,0 +1,22 @@
+name: Sezane stock checker
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check product page
+        run: |
+          curl -s "https://www.sezane.com/fr-fr/product/panier-justine/raphia-dore#size-tu" > page.html
+          if grep -qi "ajouter au panier" page.html; then
+            echo "IN STOCK"
+            exit 0
+          else
+            echo "OUT OF STOCK"
+            exit 1
+          fi
